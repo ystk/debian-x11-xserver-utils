@@ -1,3 +1,10 @@
+x11-xserver-utils (7.5+3) squeeze-security; urgency=high
+
+  * xrdb: Create shell-escape-safe cpp options in the non-pathetic-cpp case.
+    Fixes CVE-2011-0465.
+
+ -- Julien Cristau <jcristau@debian.org>  Wed, 06 Apr 2011 01:26:00 +0200
+
 x11-xserver-utils (7.5+2) unstable; urgency=low
 
   [ Julien Cristau ]
