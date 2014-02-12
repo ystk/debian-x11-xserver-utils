@@ -2,13 +2,24 @@ Source: x11-xserver-utils
 Section: x11
 Priority: optional
 Maintainer: Debian X Strike Force <debian-x@lists.debian.org>
-Uploaders: David Nusinow <dnusinow@debian.org>, Brice Goglin <bgoglin@debian.org>, Cyril Brulebois <kibi@debian.org>
-Build-Depends: debhelper (>= 5.0.0), pkg-config, libx11-dev (>= 2:1.0.0),
- libxaw7-dev (>= 1:1.0.1), libxext-dev (>= 1:1.0.0),
- libxi-dev (>= 1:1.0.0-3), libxmuu-dev (>= 1:1.0.1),
- libxrandr-dev (>= 2:1.2.99.3), libxt-dev (>= 1:1.0.0),
- libxxf86vm-dev (>= 1:1.0.0), xbitmaps, quilt,
- x11proto-input-dev (>= 1.4)
+Uploaders: Cyril Brulebois <kibi@debian.org>
+Build-Depends:
+ debhelper (>= 5.0.0),
+ pkg-config,
+ x11proto-core-dev (>= 7.0.17),
+ libx11-dev (>= 2:1.0.0),
+ libxaw7-dev (>= 1:1.0.1),
+ libxext-dev (>= 1:1.0.0),
+ libxi-dev (>= 1:1.0.0-3),
+ libxmuu-dev (>= 1:1.0.1),
+ libxrandr-dev (>= 2:1.2.99.3),
+ libxt-dev (>= 1:1.0.0),
+ libxxf86vm-dev (>= 1:1.0.0),
+ xbitmaps,
+ quilt,
+ x11proto-input-dev (>= 1.4),
+ xutils-dev (>= 1:7.5+4),
+ libxcursor-dev,
 # Reasons for build-depends:
 # debhelper for the packaging, pkg-config needed by configure scripts
 # Individual apps:
@@ -20,14 +31,14 @@ Build-Depends: debhelper (>= 5.0.0), pkg-config, libx11-dev (>= 2:1.0.0),
 # xrandr: libxrandr-dev (>= 2:1.2.0), libxrender, libx11
 # xrdb: libxmuu-dev, libx11-dev
 # xrefresh: libx11-dev
-# xset: libxmuu-dev, libx11-dev, libxext-dev,
+# xset: x11proto-core-dev (>= 7.0.17), libxmuu-dev, libx11-dev, libxext-dev,
 #       (libxxf86misc-dev), (libxfontcache-dev)
 # xsetmode: libxi-dev, libx11-dev
 # xsetpointer: libxi-dev, libx11-dev, x11proto-input-dev (>= 1.4)
-# xsetroot: libxmuu-dev, libx11-dev, xbitmaps
+# xsetroot: libxmuu-dev, libx11-dev, xbitmaps, libxcursor-dev
 # xstdcmap: libxmu-dev, libx11-dev
 # xvidtune: libxaw7-dev, libxxf86vm-dev, libxt-dev
-Standards-Version: 3.8.2
+Standards-Version: 3.9.2
 Vcs-Git: git://git.debian.org/git/pkg-xorg/app/x11-xserver-utils
 Vcs-Browser: http://git.debian.org/?p=pkg-xorg/app/x11-xserver-utils.git
 

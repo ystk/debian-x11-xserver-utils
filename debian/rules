@@ -18,12 +18,11 @@ DEF_SUBDIRS=iceauth rgb sessreg xcmsdb xgamma xhost xmodmap xrandr xrdb xrefresh
 SUBDIRS=$(DEF_SUBDIRS)
 BUILD_STAMPS = $(addprefix $(STAMP_DIR)/build-,$(SUBDIRS))
 
-CFLAGS = -Wall -g
-ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
-	CFLAGS += -O0
-else
-	CFLAGS += -O2
-endif
+CFLAGS = `dpkg-buildflags --get CFLAGS`
+CFLAGS += -Wall
+LDFLAGS = `dpkg-buildflags --get LDFLAGS`
+CPPFLAGS = `dpkg-buildflags --get CPPFLAGS`
+
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 	MAKEFLAGS += -j$(NUMJOBS)
@@ -49,24 +48,20 @@ $(STAMP_DIR)/build-%: $(STAMP_DIR)/genscripts $(STAMP_DIR)/patch
 	cd $*-build && \
 	../$*/configure --prefix=/usr --mandir=\$${prefix}/share/man \
 	                --infodir=\$${prefix}/share/info $(confflags) \
-	                --disable-xprint \
 	                CFLAGS="$(CFLAGS)" \
-	                RSH=rsh \
-	                MANCONF="/etc/manpath.config"
+			CPPFLAGS="$(CPPFLAGS)" \
+			LDFLAGS="$(LDFLAGS)"
 	cd $*-build && $(MAKE)
 	>$@
 
 clean: xsfclean
 	dh_testdir
-	dh_testroot
 	rm -f build-stamp
-
 	rm -f config.cache config.log config.status
 	rm -f */config.cache */config.log */config.status
 	rm -f conftest* */conftest*
 	rm -rf autom4te.cache */autom4te.cache
 	rm -rf *-build
-
 	dh_clean
 
 install: build
@@ -86,7 +81,7 @@ binary-arch: build install
 	dh_testroot
 
 	dh_installdocs
-	dh_install --sourcedir=debian/tmp -Xrgb.txt --list-missing
+	dh_install --sourcedir=debian/tmp -Xrgb.txt --fail-missing
 	dh_installmenu
 	dh_installchangelogs
 	dh_link
@@ -113,3 +108,12 @@ get-tarballs: $(addprefix get-tarball-,$(SUBDIRS))
 .PHONY: get-tarball-%
 get-tarball-%:
 	uscan --no-conf --download --no-symlink --destdir . --package $* --upstream-version $(shell awk -F = '/^PACKAGE_VERSION=/ { print $$2 }' < $*/configure || echo 0) --watchfile debian/watch.$* || test $$? = 1
+
+.PHONY: update-copyright
+update-copyright: $(addsuffix /COPYING, $(SUBDIRS)) debian/copyright.head
+	cp debian/copyright.head debian/copyright
+	for subdir in $(SUBDIRS); do \
+		echo >> debian/copyright && \
+		echo $$subdir: >> debian/copyright && \
+		sed -e 's/^./  &/' < $$subdir/COPYING >> debian/copyright \
+	|| exit; done

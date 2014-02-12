@@ -88,7 +88,7 @@ static const struct {
     { NULL,	    0 }
 };
 
-static void
+static void _X_NORETURN
 usage(void)
 {
     fprintf(stderr, "usage: %s [options]\n", program_name);
@@ -105,6 +105,7 @@ usage(void)
     fprintf(stderr, "  -y        (reflect in y)\n");
     fprintf(stderr, "  --screen <screen>\n");
     fprintf(stderr, "  --verbose\n");
+    fprintf(stderr, "  --current\n");
     fprintf(stderr, "  --dryrun\n");
     fprintf(stderr, "  --nograb\n");
     fprintf(stderr, "  --prop or --properties\n");
@@ -145,7 +146,7 @@ usage(void)
     /*NOTREACHED*/
 }
 
-static void
+static void _X_NORETURN
 fatal (const char *format, ...)
 {
     va_list ap;
@@ -739,7 +740,6 @@ find_mode (name_t *name, double refresh)
 		bestDist = dist;
 		best = mode;
 	    }
-	    break;
 	}
     }
     return best;
@@ -1508,7 +1508,7 @@ revert (void)
  * the configuration. Revert to the previous configuration
  * and bail
  */
-static void
+static void _X_NORETURN
 panic (Status s, crtc_t *crtc)
 {
     int	    c = crtc->crtc.index;
@@ -2679,7 +2679,8 @@ main (int argc, char **argv)
 
     root = RootWindow (dpy, screen);
 
-    if (!XRRQueryVersion (dpy, &major, &minor))
+    if (!XRRQueryExtension (dpy, &event_base, &error_base) ||
+        !XRRQueryVersion (dpy, &major, &minor))
     {
 	fprintf (stderr, "RandR extension missing\n");
 	exit (1);
@@ -2753,7 +2754,7 @@ main (int argc, char **argv)
 	    {
 		Atom		name = XInternAtom (dpy, prop->name, False);
 		Atom		type;
-		int		format;
+		int		format = 0;
 		unsigned char	*data;
 		int		nelements;
 		int		int_value;
@@ -2765,7 +2766,6 @@ main (int argc, char **argv)
 		XRRPropertyInfo *propinfo;
 
 		type = AnyPropertyType;
-		format=0;
 		
 		if (XRRGetOutputProperty (dpy, output->output.xid, name,
 					  0, 100, False, False,
@@ -2795,7 +2795,6 @@ main (int argc, char **argv)
 		    ulong_value = XInternAtom (dpy, prop->value, False);
 		    data = (unsigned char *) &ulong_value;
 		    nelements = 1;
-		    format = 32;
 		}
 		else if ((type == XA_STRING || type == AnyPropertyType))
 		{
@@ -2963,7 +2962,6 @@ main (int argc, char **argv)
 		    if ((rotations >> i) & 1) {
 			if (!first) printf (" "); first = False;
 			printf("%s", direction[i]);
-			first = False;
 		    }
 		}
 		if (rotations & RR_Reflect_X)
@@ -2973,7 +2971,7 @@ main (int argc, char **argv)
 		}
 		if (rotations & RR_Reflect_Y)
 		{
-		    if (!first) printf (" "); first = False;
+		    if (!first) printf (" ");
 		    printf ("y axis");
 		}
 		printf (")");
@@ -3371,8 +3369,6 @@ main (int argc, char **argv)
     if (setit && !dryrun) status = XRRSetScreenConfigAndRate (dpy, sc,
 						   root,
 						   (SizeID) size, (Rotation) (rotation | reflection), rate, CurrentTime);
-
-    XRRQueryExtension(dpy, &event_base, &error_base);
 
     if (setit && !dryrun && status == RRSetConfigFailed) {
 	printf ("Failed to change the screen configuration!\n");

@@ -1,3 +1,99 @@
+x11-xserver-utils (7.7~3) unstable; urgency=low
+
+  * xrandr: keystone.5c: cairo-5 box semantics changed default layout (allows
+    to work with new cairo-5c)
+
+ -- Julien Cristau <jcristau@debian.org>  Fri, 11 May 2012 22:58:40 +0200
+
+x11-xserver-utils (7.7~2) unstable; urgency=low
+
+  * xrandr: update keystone program to run with new nichrome bits
+    (cherry-picked from upstream git)
+
+ -- Julien Cristau <jcristau@debian.org>  Tue, 01 May 2012 10:35:40 +0200
+
+x11-xserver-utils (7.7~1) unstable; urgency=low
+
+  [ Julien Cristau ]
+  * xset 1.2.2
+    + add build-dep on x11proto-core-dev 7.0.17
+  * Drop --disable-xprint from configure flags, it's not used anywhere.
+  * Stop passing RSH and MANCONF to configure.  The former was only needed by
+    xsm, the latter by xman, before the xbase-clients split.
+  * sessreg 1.0.7.
+  * xcmsdb 1.0.4.
+  * xgamma 1.0.5.
+  * xhost 1.0.5.
+  * xmodmap 1.0.7.
+  * Don't use dh_testroot in debian/rules clean.
+  * Rediff 01_sessreg_implement_hostname_hashing.diff.
+  * 02_xmodmap-include-config.h-before-system-headers.diff: patch from
+    upstream git to fix a build failure.
+
+  [ Moritz Muehlenhoff ]
+  * Enable hardened build flags (closes: #655503)
+
+ -- Julien Cristau <jcristau@debian.org>  Mon, 30 Apr 2012 21:22:58 +0200
+
+x11-xserver-utils (7.6+3) unstable; urgency=low
+
+  * iceauth 1.0.5
+  * Drop 03_iceauth_manpage_commands.patch (merged upstream).
+  * xrandr 1.3.5
+  * Bump Standards-Version to 3.9.2 (no changes).
+
+ -- Cyril Brulebois <kibi@debian.org>  Sat, 02 Jul 2011 19:55:25 +0200
+
+x11-xserver-utils (7.6+2) unstable; urgency=high
+
+  [ Robert Hooker ]
+  * xrdb 1.0.9 (Fixes CVE-2011-0465)
+
+ -- Julien Cristau <jcristau@debian.org>  Wed, 06 Apr 2011 10:25:37 +0200
+
+x11-xserver-utils (7.6+1) unstable; urgency=low
+
+  [ David Nusinow ]
+  * Add 03_iceauth_manpage_commands.patch. Documents iceauth commands more
+    fully. Also fixes fd.o bug # 2354. Closes: #509837
+
+  [ Cyril Brulebois ]
+  * Make update-copyright target .PHONY
+
+  [ Julien Cristau ]
+  * xrdb 1.0.8.
+  * Remove Brice Goglin and David Nusinow from Uploaders.  Thanks for your
+    work!
+  * Bump Standards-Version to 3.9.1.
+  * Refresh patches.
+  * Upload to unstable.
+
+ -- Julien Cristau <jcristau@debian.org>  Thu, 10 Feb 2011 18:20:20 +0100
+
+x11-xserver-utils (7.6~1) experimental; urgency=low
+
+  * New upstream release candidate: X11R7.6 RC1.
+  * iceauth 1.0.4
+  * rgb 1.0.4
+  * xcmsdb 1.0.3
+  * xgamma 1.0.4
+  * xhost 1.0.4
+  * xmodmap 1.0.5
+  * xrandr 1.3.4
+  * xrdb 1.0.7
+  * xrefresh 1.0.4
+  * xset 1.2.1
+  * xsetroot 1.1.0
+  * Add libxcursor-dev build-dep.
+  * xstdcmap 1.0.2
+  * Add an update-copyright target to refresh debian/copyright using
+    upstream's COPYING files, thanks to Julien Cristau.
+  * Refresh debian/copyright accordingly.
+  * Bump xutils-dev build-dep for new macros.
+  * Switch from --list-missing to --fail-missing for additional safety.
+
+ -- Cyril Brulebois <kibi@debian.org>  Fri, 12 Nov 2010 19:16:48 +0100
+
 x11-xserver-utils (7.5+2) unstable; urgency=low
 
   [ Julien Cristau ]

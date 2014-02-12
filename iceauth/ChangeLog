@@ -1,3 +1,227 @@
+commit 27846ea3e133dbb45a4e67500eba15bf5d6c796c
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Mon May 23 19:39:04 2011 -0700
+
+    configure.ac: Bump to 1.0.5
+    
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit c791ec2ba9614e661e978436f56ed21f918750f8
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Mon May 23 19:37:50 2011 -0700
+
+    auth_finalize: Attempt to rename() if link() fails
+    
+    On some file systems (like AFP), hard links are not supported. If
+    link fails, try rename() before giving up.
+    
+    Reported-by: Jamie Kennea <jamie@pompey.org>
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit 90640776b88b32cea2316670a3b29f7785aadc7a
+Author: Jeremy Huddleston <jeremyhu@apple.com>
+Date:   Thu Apr 28 00:51:30 2011 -0700
+
+    Error out and avoid a call to malloc(0) if given a bad hex string
+    
+    Found-by: clang static analyzer
+    Signed-off-by: Jeremy Huddleston <jeremyhu@apple.com>
+
+commit ada8df395e72f84127394dadd15a180afa8ec0ec
+Author: David Nusinow <dnusinow@debian.org>
+Date:   Fri Dec 3 16:29:51 2010 -0500
+
+    Make iceauth manpage describe commands. (fd.o bug#2354)
+    
+    Reviewed-by: Jesse Adkins <jesserayadkins@gmail.com>
+    Signed-off-by: Matt Turner <mattst88@gmail.com>
+
+commit ed7ce17bb0169b3bbf2cf035bc2b221fd0c9beb2
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Wed Jan 19 10:06:55 2011 -0500
+
+    config: move man pages into their own directory
+    
+    Use services provided by XORG_MANPAGE_SECTIONS.
+    Use standard Makefile for man pages.
+    
+    Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+
+commit 3b57666a804ce53eed82f1a80c34ef479ca1e36a
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Thu Jan 13 11:15:00 2011 -0500
+
+    man: remove trailing spaces and tabs
+    
+    Using s/[ \t]*$//
+    
+    Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+
+commit e67acbba6ac2a92a8de5b2d014b5d3a8609eb36a
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Wed Jan 12 16:28:02 2011 -0500
+
+    config: replace deprecated AM_CONFIG_HEADER with AC_CONFIG_HEADERS
+    
+    This silences an Autoconf warning
+
+commit e170e5dbea7e785797cbd0d919d5f5d3d77b7006
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Wed Jan 12 13:10:21 2011 -0500
+
+    config: remove AC_PROG_CC as it overrides AC_PROG_C_C99
+    
+    XORG_STRICT_OPTION from XORG_DEFAULT_OPTIONS calls
+    AC_PROG_C_C99. This sets gcc with -std=gnu99.
+    If AC_PROG_CC macro is called afterwards, it resets CC to gcc.
+    
+    Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+
+commit 08f5377a4a853d06ec1a0396a2f1622eb6ee93ba
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Wed Jan 12 11:54:40 2011 -0500
+
+    config: use AC_PROG_INSTALL now supplied by XORG_DEFAULT_OPTIONS
+    
+    It depends on util-macros 1.8 or later
+    The existing statement can now be removed from the configuration file.
+    
+    Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+
+commit b39fab5b9af70282ab640a8a9d6b56671aeda78b
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Fri Oct 29 21:46:07 2010 -0700
+
+    iceauth 1.0.4
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit 3c1b044f63d4865378a2307dd0024afca7196b42
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Thu Oct 21 15:01:29 2010 -0700
+
+    Remove unnecessary AC_SUBST of ICEAUTH_LIBS & ICEAUTH_CFLAGS
+    
+    PKG_CHECK_MODULES automatically handles those for us
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit a33fa043dfd5e84b9afd39842d848265b16ac5d7
+Author: Alan Coopersmith <alan.coopersmith@oracle.com>
+Date:   Thu Oct 21 14:59:42 2010 -0700
+
+    config: upgrade to util-macros 1.8 for additional man page support
+    
+    Use MAN_SUBST now supplied in XORG_MANPAGE_SECTIONS
+    The value of MAN_SUBST is the same for all X.Org packages.
+    
+    Use AC_PROG_SED now supplied by XORG_DEFAULT_OPTIONS
+    Enables use of platform appropriate version of sed.
+    
+    Signed-off-by: Alan Coopersmith <alan.coopersmith@oracle.com>
+
+commit 5f79bb90cd0e3c18c184f7beb75c83e31aae6951
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Tue Jul 20 18:45:18 2010 -0400
+
+    config: update AC_PREREQ statement to 2.60
+    
+    Unrelated to the previous patches, the new value simply reflects
+    the reality that the minimum level for autoconf to configure
+    all x.org modules is 2.60 dated June 2006.
+    
+    ftp://ftp.gnu.org/gnu/autoconf/autoconf-2.60.tar.gz
+    
+    Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+
+commit f2b54a282333be841099773ee8788a2a7e2fea3b
+Author: Jesse Adkins <jesserayadkins@gmail.com>
+Date:   Tue Sep 28 13:29:49 2010 -0700
+
+    Purge cvs tags.
+    
+    Signed-off-by: Jesse Adkins <jesserayadkins@gmail.com>
+
+commit 1944291c5f541796b1ac9f036a51cb1dae0cdd81
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Thu Jan 7 17:46:31 2010 -0500
+
+    COPYING: replace stub with actual Copyright notice
+    
+    Refer to iceauth.c
+    Copyright 1989, 1998  The Open Group
+    
+    Signed-off-by: Gaetan Nadon <memsize@videotron.ca>
+
+commit 5f29af7ab19398501f2f2b6729a806b814534801
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Thu Nov 26 09:19:52 2009 -0500
+
+    Makefile.am: add ChangeLog and INSTALL on MAINTAINERCLEANFILES
+    
+    Now that the INSTALL file is generated.
+    Allows running make maintainer-clean.
+
+commit 8c19177d9937196f19975f4145e6377b1b4b17e8
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Wed Oct 28 14:09:07 2009 -0400
+
+    INSTALL, NEWS, README or AUTHORS files are missing/incorrect #24206
+    
+    Add missing INSTALL file. Use standard GNU file on building tarball
+    README may have been updated
+    Remove AUTHORS file as it is empty and no content available yet.
+    Remove NEWS file as it is empty and no content available yet.
+
+commit 3277a2349dcf9400f67dc3f91d4b6097a56d7faa
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Mon Oct 26 22:08:38 2009 -0400
+
+    Makefile.am: ChangeLog not required: EXTRA_DIST or *CLEANFILES #24432
+    
+    ChangeLog filename is known to Automake and requires no further
+    coding in the makefile.
+
+commit 9eaace4030847a25af7759c6f052e01250febdd6
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Thu Oct 22 12:34:14 2009 -0400
+
+    .gitignore: use common defaults with custom section # 24239
+    
+    Using common defaults will reduce errors and maintenance.
+    Only the very small or inexistent custom section need periodic maintenance
+    when the structure of the component changes. Do not edit defaults.
+
+commit 2ae7affc9be66652240219e42abdc63c693369e0
+Author: Gaetan Nadon <memsize@videotron.ca>
+Date:   Sun Sep 27 15:55:52 2009 -0400
+
+    Makefile.am: do not include autogen.sh in distribution #24183
+    
+    This is a private build script that should not be distributed
+
+commit eff30656f880bb3c362d7db4b82345b70b7282ee
+Author: Jeremy Huddleston <jeremyhu@freedesktop.org>
+Date:   Wed Oct 21 12:47:19 2009 -0700
+
+    This is not a GNU project, so declare it foreign.
+    
+    On Wed, 2009-10-21 at 13:36 +1000, Peter Hutterer wrote:
+    > On Tue, Oct 20, 2009 at 08:23:55PM -0700, Jeremy Huddleston wrote:
+    > > I noticed an INSTALL file in xlsclients and libXvMC today, and it
+    > > was quite annoying to work around since 'autoreconf -fvi' replaces
+    > > it and git wants to commit it.  Should these files even be in git?
+    > > Can I nuke them for the betterment of humanity and since they get
+    > > created by autoreconf anyways?
+    >
+    > See https://bugs.freedesktop.org/show_bug.cgi?id=24206
+    
+    As an interim measure, replace AM_INIT_AUTOMAKE([dist-bzip2]) with
+    AM_INIT_AUTOMAKE([foreign dist-bzip2]). This will prevent the generation
+    of the INSTALL file. It is also part of the 24206 solution.
+    
+    Signed-off-by: Jeremy Huddleston <jeremyhu@freedesktop.org>
+
 commit 42a269e9d35234306d3208eef9c8bdb2c04caf08
 Author: Alan Coopersmith <alan.coopersmith@sun.com>
 Date:   Sat Oct 10 19:58:20 2009 -0700

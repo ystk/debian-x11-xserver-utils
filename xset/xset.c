@@ -1,7 +1,3 @@
-/* 
- * $Xorg: xset.c,v 1.6 2001/02/09 02:05:58 xorgcvs Exp $
- */
-
 /*
 
 Copyright 1985, 1998  The Open Group
@@ -27,7 +23,6 @@ used in advertising or otherwise to promote the sale, use or other dealings
 in this Software without prior written authorization from The Open Group.
 
 */
-/* $XFree86: xc/programs/xset/xset.c,v 3.31 2003/05/27 22:27:09 tsi Exp $ */
 /* Modified by Stephen so keyboard rate is set using XKB extensions */
 
 #ifdef HAVE_CONFIG_H
@@ -48,10 +43,6 @@ in this Software without prior written authorization from The Open Group.
 
 #if defined(HAVE_X11_EXTENSIONS_XF86MISC_H) && defined(HAVE_X11_EXTENSIONS_XF86MSCSTR_H)
 # define XF86MISC
-#endif
-
-#if defined(HAVE_X11_EXTENSIONS_PRINT_H)
-# define BUILD_PRINTSUPPORT
 #endif
 
 #if defined(HAVE_X11_EXTENSIONS_FONTCACHE_H) && defined(HAVE_X11_EXTENSIONS_FONTCACHEP_H)
@@ -87,11 +78,6 @@ in this Software without prior written authorization from The Open Group.
 #  endif
 #  undef BOOL
 # endif
-# ifndef HAVE_USLEEP
-#  if defined(SVR4) && defined(sun)
-#   include <sys/syscall.h>
-#  endif
-# endif
 #endif /* DPMSExtension */
 
 #ifdef XF86MISC
@@ -107,9 +93,6 @@ in this Software without prior written authorization from The Open Group.
 
 static Status set_font_cache(Display *, long, long, long);
 static void query_cache_status(Display *dpy);
-#endif
-#ifdef BUILD_PRINTSUPPORT
-# include <X11/extensions/Print.h>
 #endif
 
 #define ON 1
@@ -163,8 +146,8 @@ static void set_lock(Display *dpy, Bool onoff);
 static char *on_or_off(int val, int onval, char *onstr,
 		       int offval, char *offstr, char buf[]);
 static void query(Display *dpy);
-static void usage(char *fmt, ...);
-static void error(char *message);
+static void usage(char *fmt, ...) _X_NORETURN;
+static void error(char *message) _X_NORETURN;
 static int local_xerror(Display *dpy, XErrorEvent *rep);
 
 #ifdef XF86MISC
@@ -379,19 +362,6 @@ main(int argc, char *argv[])
 	    }
 	}
 #endif
-#ifdef BUILD_PRINTSUPPORT
-	else if (strcmp(arg, "rehashprinterlist") == 0) {
-	    /* rehash list of printers */
-	    short dummy;
-
-	    if (XpQueryVersion(dpy, &dummy, &dummy)) {
-		XpRehashPrinterList(dpy);
-	    } else {
-		fprintf(stderr,
-			"server does not have extension for rehashprinterlist option\n");
-	    }
-	}
-#endif
 	else if (strcmp(arg, "fp") == 0) {	/* set font path */
 	    if (i >= argc) {
 		arg = "default";
@@ -580,8 +550,9 @@ main(int argc, char *argv[])
 		    DPMSEnable(dpy);
 		    DPMSSetTimeouts(dpy, standby_timeout, suspend_timeout,
 			off_timeout);
-		} else if (i + 1 < argc && strcmp(arg, "force") == 0) {
-		    i++;
+		} else if (strcmp(arg, "force") == 0) {
+		    if (++i >= argc)
+			usage("missing argument to dpms force", NULL);
 		    arg = argv[i];
 		    /*
 		     * The calls to usleep below are necessary to
@@ -593,23 +564,11 @@ main(int argc, char *argv[])
 		     *
 		     * On OS/2, use _sleep2()
 		     */
-		    
+
 #ifdef HAVE_USLEEP
 # define Usleep(us) usleep((us))
 #else
 #ifdef SVR4
-# ifdef sun
-/* Anything to avoid linking with -lposix4 */
-#  define Usleep(us) { \
-		struct ts { \
-			long	tv_sec; \
-			long	tv_nsec; \
-		} req; \
-		req.tv_sec = 0; \
-		req.tv_nsec = (us) * 1000;\
-		syscall(SYS_nanosleep, &req, NULL); \
-	}
-# endif
 # ifdef sgi
 #  define Usleep(us) sginap((us) / 1000)
 # endif
@@ -954,7 +913,7 @@ set_font_path(Display *dpy, char *path, int special, int before, int after)
     }
 
     /*
-     * parse the path list.  If before or after is non-zero, we'll need 
+     * parse the path list.  If before or after is non-zero, we'll need
      * the current value.
      */
 
@@ -1334,7 +1293,6 @@ query(Display *dpy)
     XKeyboardState values;
     int acc_num, acc_denom, threshold;
     int timeout, interval, prefer_blank, allow_exp;
-    int dummy;
 
 #ifdef XF86MISC
     XF86MiscKbdSettings kbdinfo;
@@ -1384,9 +1342,6 @@ query(Display *dpy)
 
 	    if (XGetAtomNames(dpy, iatoms, j, iatomnames)) {
 		for (i = 0; i < j; i++) {
-		    Bool state;
-		    int ind;
-
 		    if (XkbGetNamedIndicator(dpy, iatoms[i], &inds[i],
 					     &istates[i], NULL, NULL)) {
 			int namelen = strlen(iatomnames[i]);
@@ -1448,10 +1403,14 @@ query(Display *dpy)
 #endif
 #endif
 #ifdef XF86MISC
-    if (XF86MiscQueryExtension(dpy, &dummy, &dummy) &&
-	XF86MiscGetKbdSettings(dpy, &kbdinfo))
-	printf("  auto repeat delay:  %d    repeat rate:  %d\n",
-	       kbdinfo.delay, kbdinfo.rate);
+    {
+	int dummy;
+
+	if (XF86MiscQueryExtension(dpy, &dummy, &dummy) &&
+	    XF86MiscGetKbdSettings(dpy, &kbdinfo))
+	    printf("  auto repeat delay:  %d    repeat rate:  %d\n",
+	           kbdinfo.delay, kbdinfo.rate);
+    }
 #endif
     printf("  auto repeating keys:  ");
     for (i = 0; i < 4; i++) {
@@ -1479,7 +1438,7 @@ query(Display *dpy)
     printf("  timeout:  %d    cycle:  %d\n", timeout, interval);
 
     printf("Colors:\n");
-    printf("  default colormap:  0x%lx    BlackPixel:  %ld    WhitePixel:  %ld\n",
+    printf("  default colormap:  0x%lx    BlackPixel:  0x%lx    WhitePixel:  0x%lx\n",
 	   DefaultColormap(dpy, scr), BlackPixel(dpy, scr), WhitePixel(dpy,
 								       scr));
 
@@ -1680,15 +1639,10 @@ usage(char *fmt, ...)
 #ifdef FONTCACHE
     fprintf(stderr, "    To control font cache:\n");
     fprintf(stderr, "\t fc [hi-mark [low-mark [balance]]]\n");
-    fprintf(stderr, "\t    both mark values spcecified in KB\n");
-    fprintf(stderr, "\t    balance value spcecified in percent (10 - 90)\n");
+    fprintf(stderr, "\t    both mark values specified in KB\n");
+    fprintf(stderr, "\t    balance value specified in percent (10 - 90)\n");
     fprintf(stderr, "    Show font cache statistics:\n");
     fprintf(stderr, "\t fc s\n");
-#endif
-#ifdef BUILD_PRINTSUPPORT
-    fprintf(stderr, "    To control Xprint features:\n");
-    fprintf(stderr,
-	"\t rehashprinterlist      Recomputes the list of available printers\n");
 #endif
     fprintf(stderr, "    To set the font path:\n");
     fprintf(stderr, "\t fp= path[,path...]\n");

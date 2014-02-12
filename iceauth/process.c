@@ -1,6 +1,4 @@
 /*
- * $Xorg: process.c,v 1.5 2001/02/09 02:05:31 xorgcvs Exp $
- * $XdotOrg: $
  * 
 Copyright 1989, 1998  The Open Group
 
@@ -27,8 +25,6 @@ in this Software without prior written authorization from The Open Group.
  * Original Author of "xauth" : Jim Fulton, MIT X Consortium
  * Modified into "iceauth"    : Ralph Mor, X Consortium
  */
-
-/* $XFree86: xc/programs/iceauth/process.c,v 3.7 2001/12/14 20:00:49 dawes Exp $ */
 
 #include "iceauth.h"
 #include <ctype.h>
@@ -405,8 +401,8 @@ static int cvthexkey (	/* turn hex key string into octets */
 	len++;
     }
 
-    /* if odd then there was an error */
-    if ((len & 1) == 1) return -1;
+    /* if 0 or odd, then there was an error */
+    if (len == 0 || (len & 1) == 1) return -1;
 
 
     /* now we know that the input is good */
@@ -704,7 +700,8 @@ int auth_finalize (void)
 #if defined(WIN32) || defined(__UNIXOS2__)
 		if (rename(temp_name, iceauth_filename) == -1)
 #else
-		if (link (temp_name, iceauth_filename) == -1)
+		/* Attempt to rename() if link() fails, since this may be on a FS that does not support hard links */
+		if (link (temp_name, iceauth_filename) == -1 && rename(temp_name, iceauth_filename) == -1)
 #endif
 		{
 		    fprintf (stderr,
